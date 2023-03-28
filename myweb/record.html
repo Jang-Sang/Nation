@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="recordstyle.css">
+    <script src="https://use.fontawesome.com/926fe18a63.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        // 토글 버튼 작동
+        $(function () {
+            $(".headC").click(function () {
+                $(".headB").slideToggle();
+            });
+        });
+    </script>
+
+    <title>T.F.T</title>
+    <style>
+        th {
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 헤더 -->
+    <header>
+        <div class="container">
+            <div class="container-small">
+                <!-- 작은 화면의 배치를 위한 컨테이너-->
+                <a href="index.html" class="headA">TFT사무실</a>
+
+                <!-- 메뉴 토글 버튼 -->
+                <button type="button" class="headC">
+                    <span class="fa fa-bars" title="MENU"></span>
+                </button>
+            </div>
+
+            <!-- 내비게이션 메뉴 -->
+            <nav class="headB">
+                <ul>
+                    <li><a href="index.html">TOP</a></li>
+                    <li><a href="contents.html">콘텐츠</a></li>
+                    <li><a href="ranking.html">순위표(챌린저~마스터)</a></li>
+                    <li><a href="record.html">순위표(다이아~아이언)</a></li>
+                    <li><a href="support.html">파일철</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 컨텐츠A -->
+    <section class="conA">
+        <div class="container">
+            <!--
+■라이엇 개발 API
+https://developer.riotgames.com/
+
+샘플url
+
+https://kr.api.riotgames.com/tft/summoner/v1/summoners/by-name/ + 닉네임 데이터화 + ?api_key= + A
+
+        -->
+
+            <body>
+                <h1>TFT 티어검색</h1>
+                <form>
+                    <h3>티어선택</h3>
+                    <select id="tiers" name="tier">
+                        <option value="DIAMOND">DIAMOND</option>
+                        <option value="PLATINUM">PLATINUM</option>
+                        <option value="GOLD">GOLD</option>
+                        <option value="SILVER">SILVER</option>
+                        <option value="BRONZE">BRONZE</option>
+                        <option value="IRON">IRON</option>
+                    </select>
+
+                    <br>
+                    <hr>
+                    <h3>등급선택</h3>
+                    <!--  selected  -->
+                    <select id="divisions" name="division">
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                    </select>
+
+                    <br>
+                    <hr>
+
+
+                    <button type="button" onclick="loadData()">티어 가져오기</button>
+                    <button type="button" onclick="removeTable()">지우기</button>
+                </form>
+                <br><br>
+                <hr>
+                <div style="background-color: #ffffffbb; ">
+                    <table id="demoJSON"></table>
+                </div>
+
+
+                <script>
+                    var api_key = "RGAPI-31e2934f-3f6e-4d0e-a99e-ab558fefa3e7";
+
+                    function removeTable() {
+                        document.getElementById('demoJSON').removeChild(document.getElementById('demoJSON').childNodes[0]);
+                    }
+
+                    function loadData() {
+
+                        var tier = document.getElementById('tiers');
+                        var division = document.getElementById('divisions');
+
+                        let url, xhttp;
+
+
+                        // JSON
+                        console.log(division.value)
+                        console.log(tier.value)
+
+                        const tierStr = tier.value;
+                        const divisionStr = division.value
+
+
+                        url = `https://kr.api.riotgames.com/tft/league/v1/entries/${tierStr}/${divisionStr}?page=1&api_key=${api_key}`;
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                let jsonObj = JSON.parse(this.responseText);
+                                const parseRes = parseJSON(jsonObj);
+                            }
+                        };
+                        xhttp.open("GET", url, true);
+                        xhttp.send();
+
+
+
+                    } // end loadData()
+
+                    let A = Math.floor(Math.random() * 205);
+
+                    function parseJSON(jsonObj) {
+                        console.log(jsonObj)
+
+                        const table = []
+                        jsonObj.sort(function(a, b){return b.leaguePoints - a.leaguePoints});
+                        jsonObj.forEach(e => {
+                            console.log(e)
+                            table.push("<tr><th></th><th></th></tr>")
+                            table.push(`<tr><td>티어</td><td>${e.tier}</td></tr>`);
+                            table.push(`<tr><td>랭크</td><td>${e.rank}</td></tr>`);
+                            table.push(`<tr><td>summonerId</td><td>${e.summonerId}</td></tr>`);
+                            table.push(`<tr><td>닉네임</td><td>${e.summonerName}</td></tr>`);
+                            table.push(`<tr><td>리그포인트</td><td>${e.leaguePoints}</td></tr>`);
+                            table.push(`<tr><td>승수</td><td>${e.wins}</td></tr>`);
+                            table.push(`<tr><td>패배수</td><td>${e.losses}</td></tr>`);
+                        })
+
+
+
+                        document.getElementById('demoJSON').innerHTML = table.join('\n');
+
+                    }
+                </script>
+
+
+            </body>
+
+
+
+
+
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer>
+        <div class="container">
+            <!-- 푸터A : 사이트 정보 -->
+            <div class="footA">
+                <h2>TFT사무실</h2>
+                <p>
+                    주소: 롤체지지<br>
+                    <a href="http://lolchess.gg/">http://lolchess.gg</a>
+                </p>
+            </div>
+            <!-- 푸터B : 푸터 메뉴 -->
+            <nav class="footB">
+                <div>
+                    <h3>ABOUT</h3>
+                    <ul>
+                        <li><a href="#">설립</a></li>
+                        <li><a href="#">주소</a></li>
+                        <li><a href="#">지도</a></li>
+                        <li><a href="#">스태프</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>SUPPORT</h3>
+                    <ul>
+                        <li><a href="#">다운로드</a></li>
+                        <li><a href="#">매뉴얼</a></li>
+                        <li><a href="#">자주 묻는 질문</a></li>
+                        <li><a href="#">문의</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>CONTENTS</h3>
+                    <ul>
+                        <li><a href="#">공지사항</a></li>
+                        <li><a href="#">비즈니스</a></li>
+                        <li><a href="#">프로필</a></li>
+                        <li><a href="#">개발자</a></li>
+                        <li><a href="#">블로그</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- 푸터C : 저작권-->
+            <div class="footC">
+                © lolchess corp. All rights reserved.
+            </div>
+            <!-- 푸터D : SNS 아이콘 -->
+            <nav class="footD">
+                <ul>
+                    <li><a href="#"><span class="fa fa-twitter" title="Twitter"></span></a></li>
+                    <li><a href="#"><span class="fa fa-facebook" title="Facebook"></span></a></li>
+                    <li><a href="#"><span class="fa fa-google-plus" title="Google Plus"></span></a></li>
+                    <li><a href="#"><span class="fa fa-instagram" title="Instagram"></span></a></li>
+                    <li><a href="#"><span class="fa fa-youtube" title="YouTube"></span></a></li>
+                </ul>
+            </nav>
+        </div>
+
+    </footer>
+
+</html>
+
