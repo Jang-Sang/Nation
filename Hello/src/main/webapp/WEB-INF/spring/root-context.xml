@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- 
+		스프링에서 사용할 객체를 설정하는 파일...
+		Controller를 제외한 모든 객체....
+		DAO , Service , DB , Fileupload...
+	 -->
+	
+	<bean id="name" class="java.lang.String">
+		<constructor-arg value="김민준"/>
+	</bean>
+	
+ 	<bean id="age" class="java.lang.Integer">
+		<constructor-arg value="500"/>
+	</bean>
+	 
+	<!-- 
+		bean == 객체
+		 - id - 객체명
+		 - class - 객체 생성시 사용할 클래스의 경로와 이름
+	 	 - scope - 객체 생성과 유지 범위를 지정하는 속성.
+	 	  - 기본값이 singleton으로 설정되어 있다.
+	 	  - session,request는 사용을 하지 않는다...
+	 	  - 요청시마다 생성하게 만드는 속성 prototype으로 설정
+	 -->
+	 <!-- PersonVO p1 = new PersonVO(); -->
+	 <bean id="p1" class="vo.PersonVO" scope="singleton">
+	 	<!-- 인젝션(DI) - 객체 생성시 필요한 데이터들을 자동으로 넣어주는 방식 
+	 		 - setter를 이용하는 방식 
+	 		 - 생성자를 이용하는 방식
+	 	-->
+	 	<!-- setter 인젝션 -->
+	 	<!-- p1.setName("김민준"); -->
+	 	<property name="name" value="김민준"></property>
+	 	<property name="age" value="20"/>
+	 	<property name="tel" value="010-3666-6768"/>
+	 </bean>
+	 
+	 <!-- 생성자 인젝션 -->
+	 <!-- PersonVO p2 = new PersonVO("홍길동",500,"010-1111-2222"); -->
+	 <bean id="p2" class="vo.PersonVO" scope="prototype">
+	 	<constructor-arg ref="name"/>
+	 	<constructor-arg ref="age"/>
+	 	<constructor-arg value="010-1111-2222"/>
+	 </bean>
+	 
+
+	
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
