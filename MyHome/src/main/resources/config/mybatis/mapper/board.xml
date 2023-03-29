@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board"><!-- SQL 문들을 파일마다 구분할수 있는 이름.... -->
+
+	<select id="selectList" resultType="board" parameterType="map">
+		select * from 
+			(select rownum rn,t.* from 
+				(select b.*,m.id,m.name 
+					from board b,member m 
+					where b.no = m.no
+					<if test="type != null">
+						<choose>
+							<when test="type == 'seq'">
+								and seq=#{word}
+							</when>
+							<otherwise>
+								and ${type} like '%${word}%'
+							</otherwise>
+						</choose>
+						<!--  #{} - 데이터로 취급 ${} - 글자 자체로 처리... -->
+					</if> 
+				order by groupno desc,orderno asc,depth asc) 
+			t) 
+		<![CDATA[
+			where rn >=#{first} and rn <= #{last}
+		]]>
+	</select>
+	
+	<select id="selectOne" resultType="board">
+		select b.*,m.id,m.name from board b,member m where b.no = m.no and seq = #{seq}
+	</select>
+	
+	<select id="getTotal" resultType="int" parameterType="map">
+		select count(*) from board b,member m where b.no = m.no 
+			<if test="type != null">
+				<if test="type == 'seq'">
+					and seq = #{word}
+				</if>
+				<if test="type != 'seq'">
+					and ${type} like '%${word}%'
+				</if> 
+			</if>			
+	</select>
+	
+	<insert id="insert" parameterType="board">
+		insert into board values(#{seq},#{no},#{title},#{content,jdbcType=CLOB},#{filename,jdbcType=VARCHAR},0,sysdate,#{groupno},#{orderno},#{depth})
+	</insert>
+	
+	<update id="updateOrderno" parameterType="board">
+		update board set orderno=orderno+1 where groupno=#{groupno} and orderno >= #{orderno}
+	</update>
+	
+	<select id="getSeq" resultType="int">
+		select board_seq.nextval from dual
+	</select>
+	
+	
+	<update id="setGroupno" parameterType="board">
+		update board set groupno=#{groupno} where seq=#{seq} 
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
