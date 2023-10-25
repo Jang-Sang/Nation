@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean name="dao" class="dao.BoardDAOImpl"/>
+	
+	<bean name="service" class="service.BoardServiceImpl">
+		<constructor-arg ref="dao"/>
+	</bean>
+	
+<!-- 	<bean name="list" class="java.util.ArrayList">
+		<property>
+			<list>
+				<value>값</value>
+				<value>값</value>
+				<value>값</value>
+				<value>값</value>
+			</list>
+		</property>
+	</bean>
+ -->	
+</beans>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardfiles"><!-- SQL 문들을 파일마다 구분할수 있는 이름.... -->
+
+	<select id="selectList" resultType="boardfiles" parameterType="int">
+		select * from boardfiles where board_seq=#{board_seq}
+	</select>
+	
+	<insert id="insert" parameterType="boardfiles">
+		insert into boardfiles values(boardfiles_seq.nextval,#{board_seq},#{filename})
+	</insert>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
